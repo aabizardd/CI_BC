@@ -41,6 +41,15 @@ class Pjasa_model extends CI_Model
 
     }
 
+    public function aktifClean($id)
+    {
+
+        $this->db->set('status_aktif', 1);
+        $this->db->where('id_clean', $id);
+        $this->db->update('productClean');
+
+    }
+
     public function updateJasaClean($id, $data)
     {
         $this->db->where('id_clean', $id);
@@ -50,6 +59,14 @@ class Pjasa_model extends CI_Model
     public function deleteBeauty($id)
     {
         $this->db->set('status_aktif', 0);
+        $this->db->where('id_beauty', $id);
+        $this->db->update('productbeauty');
+
+    }
+
+    public function aktifBeauty($id)
+    {
+        $this->db->set('status_aktif', 1);
         $this->db->where('id_beauty', $id);
         $this->db->update('productbeauty');
 

@@ -28,7 +28,7 @@ class pjasa extends CI_Controller
 
             $where = [
                 'id_pjasa' => $this->session->userdata('id'),
-                'status_aktif' => 1,
+                // 'status_aktif' => 1,
             ];
 
             $data['AllProductClean'] = $this->db->get_where('productclean', $where)->result_array();
@@ -48,7 +48,7 @@ class pjasa extends CI_Controller
         } else {
             $where = [
                 'id_pjasa' => $this->session->userdata('id'),
-                'status_aktif' => 1,
+
             ];
             $data['AllProductBeauty'] = $this->db->get_where('productbeauty', $where)->result_array();
 
@@ -137,10 +137,19 @@ class pjasa extends CI_Controller
     public function hapusClean($id)
     {
         $this->Pjasa_model->deleteClean($id);
+        $this->session->set_flashdata('p_success', 'Item berhasil dinonaktifkan');
+
+        redirect('pjasa');
+    }
+    public function aktifClean($id)
+    {
+        $this->Pjasa_model->aktifClean($id);
+        $this->session->set_flashdata('p_success', 'Item berhasil diaktifkan');
+
         redirect('pjasa');
     }
 
-    public function editClean()
+    public function editClean($id)
     {
         $this->form_validation->set_rules('nama_jasa', 'Nama_jasa', 'required');
         $this->form_validation->set_rules('harga_jasa', 'Harga_jasa', 'required');
@@ -148,6 +157,7 @@ class pjasa extends CI_Controller
         $this->form_validation->set_rules('desc', 'Desc', 'required');
         $this->form_validation->set_rules('tipe', 'Tipe', 'required');
         if ($this->form_validation->run() == false) {
+            $data['idclean'] = $id;
             $data['productClean'] = $this->Pjasa_model->getProductClean();
             $this->load->view('template_pjasa/header_pjasa');
             $this->load->view('pjasa/editClean', $data);
@@ -210,9 +220,20 @@ class pjasa extends CI_Controller
     {
 
         $this->Pjasa_model->deleteBeauty($id);
+        $this->session->set_flashdata('p_success', 'Item berhasil di non-aktifkan');
         redirect('pjasa/indexbeauty');
     }
-    public function editBeauty()
+
+    public function aktifBeauty($id)
+    {
+
+        $this->Pjasa_model->aktifBeauty($id);
+        $this->session->set_flashdata('p_success', 'Item berhasil diaktifkan');
+
+        redirect('pjasa/indexbeauty');
+    }
+
+    public function editBeauty($id)
     {
         $this->form_validation->set_rules('nama_jasa', 'Nama_jasa', 'required|trim');
         $this->form_validation->set_rules('harga_jasa', 'Harga_jasa', 'required|trim');
@@ -220,6 +241,7 @@ class pjasa extends CI_Controller
         $this->form_validation->set_rules('desc', 'Desc', 'required|trim');
         $this->form_validation->set_rules('tipe', 'Tipe', 'required|trim');
         if ($this->form_validation->run() == false) {
+            $data['idjasa'] = $id;
             $data['productBeauty'] = $this->Pjasa_model->getProductBeauty();
             $this->load->view('template_pjasa/header_pjasa');
             $this->load->view('pjasa/editBeauty', $data);
@@ -233,11 +255,95 @@ class pjasa extends CI_Controller
                 'descmini_beauty' => $this->input->post('desc_mini'),
                 'tipe_product' => $this->input->post('tipe'),
             ];
+
+            // $config['upload_path'] = '.assetsAwal/img/product/feature-product/';
+            // $config['allowed_types'] = 'jpg|jpeg|png';
+            // $this->load->library('upload', $config);
+            // $upload = $this->upload->do_upload('gambar');
+            // var_dump($upload);die();
+            // if ($upload) {
+            //     $upload = $this->upload->data();
+            //     $datagambar = array(
+            //         'gambar_beauty' => $upload['name'],
+            //     );
+            //     $data = array_merge($data, $datagambar);
+            // } else {
+            //     $data = $data;
+            // }
+
+            $uploadGambar = $_FILES['gambar'];
+
+            // var_dump($uploadGambar);die();
+            $datagambar = [];
+            if ($uploadGambar['name'] == "") {
+                // var_dump("kosong");die();
+                $datagambar = array(
+                    'gambar_beauty' => $this->input->post('gambar_lama'),
+                );
+            } else {
+                $datagambar = array(
+                    'gambar_beauty' => $this->_uploadGambarEdit("beauty", $id),
+                );
+            }
+
+            $data = array_merge($data, $datagambar);
+
+            //    'gambar_beauty' => $this->_uploadGambarEdit("beauty", $id),
+
             $this->Pjasa_model->updateJasaBeauty($idbeauty, $data);
             $this->session->set_flashdata('p_success', 'Item berhasil diubah');
             redirect('pjasa/indexbeauty');
         }
     }
+
+    private function _uploadGambarEdit($tipe, $id)
+    {
+        $namaFiles = $_FILES['gambar']['name'];
+        $ukuranFile = $_FILES['gambar']['size'];
+        $type = $_FILES['gambar']['type'];
+        $eror = $_FILES['gambar']['error'];
+
+        $tmpName = $_FILES['gambar']['tmp_name'];
+
+        if ($eror === 4) {
+
+            $this->session->set_flashdata('alert_file', 'Anda belum memilih gambar');
+
+            if ($tipe == "beauty") {
+                redirect('pjasa/editBeauty/' . $id);
+            } else {
+                redirect('pjasa/editClean/' . $id);
+            }
+
+            return false;
+        }
+
+        $ekstensiGambarValid = ['jpg', 'jpeg', 'png'];
+        $ekstensiGambar = explode('.', $namaFiles);
+        $ekstensiGambar = strtolower(end($ekstensiGambar));
+        if (!in_array($ekstensiGambar, $ekstensiGambarValid)) {
+            $this->session->set_flashdata('alert_file', 'Yang anda upload bukan foto');
+
+            if ($tipe == "beauty") {
+                redirect('pjasa/editBeauty/' . $id);
+
+            } else {
+                redirect('pjasa/editClean/' . $id);
+
+            }
+
+            return false;
+        }
+
+        $namaFilesBaru = uniqid();
+        $namaFilesBaru .= '.';
+        $namaFilesBaru .= $ekstensiGambar;
+
+        move_uploaded_file($tmpName, 'assetsAwal/img/product/feature-product/' . $namaFilesBaru);
+
+        return $namaFilesBaru;
+    }
+
     public function riwayat()
     {
 

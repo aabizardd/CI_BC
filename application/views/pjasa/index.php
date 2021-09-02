@@ -58,9 +58,17 @@ foreach ($AllProductClean as $product) {?>
                                     width="300"></td>
                             <td scope="col"> <?=$product['tipe_product'];?> </td>
                             <td scope="col">
+                                <?php if ($product['status_aktif'] == 1): ?>
                                 <a href="<?=base_url('pjasa/hapusClean') . '/' . $product['id_clean'];?>">
-                                    <span class="badge badge-danger">Hapus</span><br>
+                                    <span class="badge badge-danger">Non-Aktif</span><br>
                                 </a>
+                                <?php else: ?>
+                                <a href="<?=base_url('pjasa/aktifClean') . '/' . $product['id_clean'];?>">
+                                    <span class="badge badge-success">Aktifkan</span><br>
+                                </a>
+                                <?php endif;?>
+
+
                                 <a href="<?=base_url('pjasa/editClean') . '/' . $product['id_clean'];?>">
                                     <span class="badge badge-primary">Edit</span>
                                 </a>

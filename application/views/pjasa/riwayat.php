@@ -30,7 +30,7 @@
                                     <tr>
                                         <th scope="col"> No.</th>
                                         <th scope="col"> Nama Konsumen </th>
-                                        <th scope="col"> ID Order </th>
+                                        <!-- <th scope="col"> ID Order </th> -->
                                         <th scope="col"> Nama Product </th>
                                         <th scope="col"> Harga Product </th>
                                         <th scope="col">
@@ -39,6 +39,7 @@
                                         <th scope="col"> Total Biaya </th>
                                         <th scope="col"> Alamat </th>
                                         <th scope="col"> Phone Number </th>
+                                        <th scope="col"> Tanggal Pesan </th>
                                         <th scope="col"> Status </th>
                                     </tr>
                                 </thead>
@@ -49,7 +50,7 @@ foreach ($cl as $c): ?>
                                     <tr>
                                         <td scope="col"><?=$no++;?></td>
                                         <td scope="col"><?=$c['namapengorder']?></td>
-                                        <td scope="col"><?=$c['id_' . $jasa_]?></td>
+
                                         <td scope="col"><?=$c['nama_' . $jasa_]?></td>
                                         <td scope="col"><?=$c['harga_' . $jasa_]?></td>
                                         <td scope="col">
@@ -58,6 +59,7 @@ foreach ($cl as $c): ?>
                                         <td scope="col"><?=$c['total_harga']?></td>
                                         <td scope="col"><?=$c['alamat_pengorder']?></td>
                                         <td scope="col"><?=$c['nomor_pengorder']?></td>
+                                        <td scope="col"><?=$c['tanggal_pesan']?></td>
 
                                         <?php if ($c['status'] == 1): ?>
                                         <td scope="col">Transaksi Selesai</td>

@@ -52,9 +52,15 @@
                             </td>
                             <td scope="col"> <?=$product['tipe_product'];?> </td>
                             <td scope="col">
+                                <?php if ($product['status_aktif'] == 1): ?>
                                 <a href="<?=base_url('pjasa/hapusBeauty') . '/' . $product['id_beauty'];?>">
-                                    <span class="badge badge-danger">Hapus</span><br>
+                                    <span class="badge badge-danger">Non-Aktif</span><br>
                                 </a>
+                                <?php else: ?>
+                                <a href="<?=base_url('pjasa/aktifBeauty') . '/' . $product['id_beauty'];?>">
+                                    <span class="badge badge-success">Aktifkan</span><br>
+                                </a>
+                                <?php endif;?>
                                 <a href="<?=base_url('pjasa/editBeauty') . '/' . $product['id_beauty'];?>">
                                     <span class="badge badge-primary">Edit</span>
                                 </a>
